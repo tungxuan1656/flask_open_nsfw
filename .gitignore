@@ -1,0 +1,7 @@
+open_nsfw_env/
+.vscode
+logs/
+__pycache__/
+nsfw_model/
+pyrightconfig.json
+.DS_Store
