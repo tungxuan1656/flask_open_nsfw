@@ -57,7 +57,7 @@ def load_model(model_path):
         raise ValueError("saved_model_path must be the valid directory of a saved model to load.")
 
     clear_session()
-    model = tf.keras.models.load_model(model_path, custom_objects={'KerasLayer': hub.KerasLayer})
+    model = tf.keras.models.load_model(model_path, custom_objects={'KerasLayer': hub.KerasLayer}, compile=False)
     return model
 
 

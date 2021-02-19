@@ -9,6 +9,7 @@ import base64
 
 cwd = os.getcwd()
 model = predict.load_model(f'{cwd}/app/api/keras_open_nsfw/nsfw_mobilenet2.h5')
+predict.classify(model, f'{cwd}/app/api/image.jpg')
 
 
 @bp.route('/classify_nsfw', methods=['GET', 'POST'])
