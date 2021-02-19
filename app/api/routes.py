@@ -7,9 +7,12 @@ from app.main.utils import make_response, is_base64
 import base64
 
 
-cwd = os.getcwd()
-model = predict.load_model(f'{cwd}/app/api/keras_open_nsfw/nsfw_mobilenet2.h5')
-predict.classify(model, f'{cwd}/app/api/image.jpg')
+current_dir_path = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir_path, 'keras_open_nsfw/nsfw_mobilenet2.h5')
+image_path = os.path.join(current_dir_path, 'image.jpg')
+
+model = predict.load_model(model_path)
+predict.classify(model, image_path)
 
 
 @bp.route('/classify_nsfw', methods=['GET', 'POST'])
@@ -26,7 +29,6 @@ def classify_photo_nsfw():
         return make_response(False, description='Base64 string format is incorrect')
 
     imgdata = base64.b64decode(base64_image)
-    image_path = './app/api/image.jpg'
     with open(image_path, 'wb') as f:
         f.write(imgdata)
 
