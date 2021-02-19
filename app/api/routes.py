@@ -15,6 +15,9 @@ IMAGE_UPLOAD_FOLDER = os.path.join(CURRENT_PATH, '../../logs/image_upload')
 IMAGE_PATH = os.path.join(CURRENT_PATH, 'image.jpg')
 IMAGE_ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
+if not os.path.exists(IMAGE_UPLOAD_FOLDER):
+    os.mkdir(IMAGE_UPLOAD_FOLDER)
+
 model = predict.load_model(MODEL_PATH)
 predict.classify(model, IMAGE_PATH)
 
