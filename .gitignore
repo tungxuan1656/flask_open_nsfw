@@ -5,3 +5,4 @@ __pycache__/
 nsfw_model/
 pyrightconfig.json
 .DS_Store
+logs/image_upload/*
