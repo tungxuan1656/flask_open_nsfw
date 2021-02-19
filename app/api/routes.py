@@ -32,13 +32,15 @@ def classify_photo_nsfw():
     with open(image_path, 'wb') as f:
         f.write(imgdata)
 
-    # start = time.time()
+    start = time.time()
     dict_result = predict.classify(model, image_path)
-    # print(f'Model classify in {time.time() - start} seconds')
+
     softmax = dict_result[image_path]
     label = max(softmax, key=softmax.get)
     result = {'NSFW': 0}
     if label == 'porn' or label == 'hentai':
         result['NSFW'] = 1
+
+    print(f'Model classify in {time.time() - start} seconds. Result: {result}')
     # result['Classify'] = {'Label': label, 'Detail': softmax}
     return make_response(True, result, '')
