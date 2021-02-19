@@ -53,6 +53,7 @@ def classify_photo_nsfw():
     result = {'NSFW': 0}
     if label == 'porn' or label == 'hentai':
         result['NSFW'] = 1
+    result['Score'] = softmax
 
     filename = secure_filename(image_file.filename)
     basename, ext = os.path.splitext(filename)
