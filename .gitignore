@@ -1,6 +1,6 @@
 open_nsfw_env/
 .vscode
-logs/
+open_nsfw.log*
 __pycache__/
 nsfw_model/
 pyrightconfig.json
