@@ -1,0 +1,43 @@
+{
+	"info": {
+		"_postman_id": "58a2a0cb-85e3-4cac-8fd3-ce244699a08a",
+		"name": "Open NSFW",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Check",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/tungxuan/Desktop/sweet.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://live.mdcgate.com:6666/api/nsfw/check",
+					"protocol": "http",
+					"host": [
+						"live",
+						"mdcgate",
+						"com"
+					],
+					"port": "6666",
+					"path": [
+						"api",
+						"nsfw",
+						"check"
+					]
+				},
+				"description": "Upload file\n- Định dạng MULTIPART FORM DATA\n    - Key của trường file là: 'file'\n    - Không cần gửi lên tên file (tên file nằm trong file gửi lên)\n- Return:\n+ NSFW: 0|1\n    + 1: Not safe (ảnh porn/hentai)\n    + 0: Safe (ảnh bình thường)"
+			},
+			"response": []
+		}
+	]
+}
