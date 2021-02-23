@@ -21,7 +21,7 @@ if not os.path.exists(IMAGE_UPLOAD_FOLDER):
     os.mkdir(IMAGE_UPLOAD_FOLDER)
 
 model = predict.load_model(MODEL_PATH)
-predict.classify(model, IMAGE_PATH)
+# predict.classify(model, IMAGE_PATH)
 
 
 @bp.route('/nsfw/check', methods=['GET', 'POST'])
@@ -60,6 +60,12 @@ def classify_photo_nsfw():
     # submit an empty part without filename
     if FILENAME == '' or not allowed_file(FILENAME):
         return make_response(False, description='Invalid file format!')
+
+    # test image
+    try:
+        Image.open(IMAGE_PATH)
+    except:
+        return make_response(False, description='Invalid image data!')
 
     # Prediction image
     start = time.time()

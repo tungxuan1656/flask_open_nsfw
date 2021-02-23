@@ -13,7 +13,9 @@ def make_response(is_success=True, params=None, description=''):
 
         return jsonify(response)
     else:
-        return jsonify({'Result': 'Failed', 'Description': description})
+        r = jsonify({'Result': 'Failed', 'Description': description})
+        print(r)
+        return r
 
 
 def is_base64(sb):
