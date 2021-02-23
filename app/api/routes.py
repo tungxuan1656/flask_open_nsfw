@@ -45,16 +45,10 @@ def classify_photo_nsfw():
         if 'filename' not in data:
             return make_response(False, description='Filename not found!')
         base64_image = data['base64_image'].replace('data:image/jpeg;base64,', '')
-        if not isinstance(base64_image, str):
-            return make_response(False, description='Base64 string format is incorrect')
-
-        try:
-            base64.decodestring(base64_image)
-        except:
+        if not isinstance(base64_image, str) or not is_base64(base64_image):
             return make_response(False, description='Base64 string format is incorrect')
 
         imgdata = base64.b64decode(base64_image)
-
         with open(IMAGE_PATH, 'wb') as f:
             f.write(imgdata)
         FILENAME = data['filename']

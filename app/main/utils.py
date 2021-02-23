@@ -26,6 +26,6 @@ def is_base64(sb):
             sb_bytes = sb
         else:
             raise ValueError("Argument must be string or bytes")
-        return base64.b64encode(base64.b64decode(sb_bytes)) == sb_bytes
+        return base64.b64encode(base64.b64decode(sb_bytes)).decode() == sb_bytes
     except Exception:
         return False
