@@ -1,5 +1,5 @@
 from app.api import bp
-from app.api.keras_open_nsfw import predict
+# from app.api.keras_open_nsfw import predict
 import os
 from flask import request
 import time
@@ -8,20 +8,27 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 from io import BytesIO
 import base64
+from tensorflow.keras.models import load_model
+import numpy as np
+from skimage import transform
+# import keras.backend.tensorflow_backend as tb
+# tb._SYMBOLIC_SCOPE.value = True
 
 
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(CURRENT_PATH, 'keras_open_nsfw/nsfw_mobilenet2.h5')
+# MODEL_PATH = os.path.join(CURRENT_PATH, 'keras_open_nsfw/nsfw_mobilenet2.h5')
 IMAGE_UPLOAD_FOLDER = os.path.join(CURRENT_PATH, '../../logs/image_upload')
 IMAGE_PATH = os.path.join(CURRENT_PATH, 'image.jpg')
 IMAGE_ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 FILENAME = ''
+NEW_MODEL_PATH = os.path.join(CURRENT_PATH, 'keras_open_nsfw/lakshaychhabra_weights.h5')
 
 if not os.path.exists(IMAGE_UPLOAD_FOLDER):
     os.mkdir(IMAGE_UPLOAD_FOLDER)
 
-model = predict.load_model(MODEL_PATH)
+# model = predict.load_model(MODEL_PATH)
 # predict.classify(model, IMAGE_PATH)
+new_model = load_model(NEW_MODEL_PATH)
 
 
 @bp.route('/nsfw/check', methods=['GET', 'POST'])
@@ -72,14 +79,29 @@ def classify_photo_nsfw():
 
     # Prediction image
     start = time.time()
-    dict_result = predict.classify(model, IMAGE_PATH)
+    # old model
+    # dict_result = predict.classify(model, IMAGE_PATH)
+    # softmax = dict_result[IMAGE_PATH]
+    # label = max(softmax, key=softmax.get)
+    # result = {'NSFW': 0}
+    # if label == 'porn' or label == 'hentai':
+    #     result['NSFW'] = 1
+    # result['Score'] = softmax
 
-    softmax = dict_result[IMAGE_PATH]
-    label = max(softmax, key=softmax.get)
+    # new model
+    image = load(IMAGE_PATH)
+    dict_result = new_model.predict(image)
+    softmax = dict_result[0]
     result = {'NSFW': 0}
-    if label == 'porn' or label == 'hentai':
-        result['NSFW'] = 1
-    result['Score'] = softmax
+    if len(softmax) == 3:
+        neural_score = round(float(softmax[0]), 3)
+        porn_score = round(float(softmax[1]), 3)
+        sexy_score = 1 - neural_score - porn_score
+        if porn_score > neural_score and porn_score > sexy_score:
+            result['NSFW'] = 1
+        result['Score'] = {'Neural': neural_score, 'Porn': porn_score, 'Sexy': sexy_score}
+    else:
+        return make_response(False, description='Model cannot prediction image')
 
     basename, ext = os.path.splitext(FILENAME)
     basename += time.strftime("_%Y%m%d_%H%M%S")
@@ -97,3 +119,12 @@ def classify_photo_nsfw():
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in IMAGE_ALLOWED_EXTENSIONS
+
+
+def load(filename):
+    np_image = Image.open(filename)
+    np_image = np.array(np_image).astype('float32') / 255
+    np_image = transform.resize(np_image, (224, 224, 3))
+    np_image = np.expand_dims(np_image, axis=0)
+    # img=mpimg.imread(filename)
+    return np_image
